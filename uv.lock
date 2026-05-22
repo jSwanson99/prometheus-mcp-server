@@ -1642,6 +1642,7 @@ dependencies = [
     { name = "mcp", extra = ["cli"] },
     { name = "prometheus-api-client" },
     { name = "python-dotenv" },
+    { name = "pyyaml" },
     { name = "requests" },
     { name = "structlog" },
 ]
@@ -1667,6 +1668,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.10.0" },
     { name = "python-dotenv" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "requests" },
     { name = "requests", marker = "extra == 'dev'", specifier = ">=2.31.0" },
     { name = "structlog", specifier = ">=23.0.0" },

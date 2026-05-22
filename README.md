@@ -177,6 +177,62 @@ See the [chart values](charts/prometheus-mcp-server/values.yaml) for all availab
 | `PROMETHEUS_MCP_STATELESS_HTTP` | Enable stateless HTTP mode for multi-replica support | No (default: False) |
 | `PROMETHEUS_CUSTOM_HEADERS` | Custom headers as JSON string | No |
 | `TOOL_PREFIX` | Prefix for all tool names (e.g., `staging` results in `staging_execute_query`). Useful for running multiple instances targeting different environments in Cursor | No |
+| `PROMPTS_DIR` | Path to a directory of prompt templates to serve (see [Prompts & Resources from Disk](#prompts--resources-from-disk)) | No |
+| `RESOURCES_DIR` | Path to a directory of static files to serve as MCP resources (see [Prompts & Resources from Disk](#prompts--resources-from-disk)) | No |
+
+## Prompts & Resources from Disk
+
+You can mount directories of prompt templates and static resource files that the server will automatically serve as MCP [prompts](https://modelcontextprotocol.io/docs/concepts/prompts) and [resources](https://modelcontextprotocol.io/docs/concepts/resources).
+
+### Prompts
+
+Set `PROMPTS_DIR` to a directory containing `.md` files. Each file becomes an MCP prompt.
+
+Files can use YAML frontmatter to set the prompt name and description. The body is the prompt template — any `{placeholder}`
+in the body is automatically detected and exposed as a required prompt argument.
+
+```
+prompts/
+├── analyze.md
+├── summarize.md
+└── ops/
+    └── incident.md
+```
+
+Example prompt file (`prompts/example.md`):
+
+```markdown
+---
+name: example_prompt
+description: ask your llm to do something with this prompt
+---
+Use the metric {metricname} to do something useful
+```
+
+This registers a prompt named `analyze_metric` with one required argument `metric_name`. If no frontmatter is provided, the prompt name defaults to the filename stem.
+
+### Resources
+
+Set `RESOURCES_DIR` to a directory of files. Every file is served as a static MCP resource with its URI derived from the relative path (`resource://<path>`). MIME types are inferred from file extensions.
+
+```
+resources/
+└── runbook.md
+```
+
+This becomes a resource available at `resource://runbook.md`.
+
+### Example: Docker
+
+```bash
+docker run -i --rm \
+  -e PROMETHEUS_URL="http://your-prometheus:9090" \
+  -e PROMPTS_DIR="/data/prompts" \
+  -e RESOURCES_DIR="/data/resources" \
+  -v ./prompts:/data/prompts:ro \
+  -v ./resources:/data/resources:ro \
+  ghcr.io/pab1it0/prometheus-mcp-server:latest
+```
 
 ## Available Tools
 
@@ -203,6 +259,7 @@ The list of tools is configurable, so you can choose which tools you want to mak
 - Authentication support
   - Basic auth from environment variables
   - Bearer token auth from environment variables
+- Load prompt templates and static resources from disk directories
 - Docker containerization support
 - Provide interactive tools for AI assistants
 

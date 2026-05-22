@@ -155,6 +155,9 @@ class PrometheusConfig:
     custom_headers: Optional[Dict[str, str]] = None
     # Request timeout in seconds to prevent hanging requests (DDoS protection)
     request_timeout: int = 30
+    # Optional directories for disk-based prompts and resources
+    prompts_dir: Optional[str] = None
+    resources_dir: Optional[str] = None
 
 config = PrometheusConfig(
     url=os.environ.get("PROMETHEUS_URL", ""),
@@ -174,6 +177,8 @@ config = PrometheusConfig(
     client_key=os.environ.get("PROMETHEUS_CLIENT_KEY", "") or None,
     custom_headers=json.loads(os.environ.get("PROMETHEUS_CUSTOM_HEADERS")) if os.environ.get("PROMETHEUS_CUSTOM_HEADERS") else None,
     request_timeout=int(os.environ.get("PROMETHEUS_REQUEST_TIMEOUT", "30")),
+    prompts_dir=os.environ.get("PROMPTS_DIR") or None,
+    resources_dir=os.environ.get("RESOURCES_DIR") or None,
 )
 
 def get_prometheus_auth():

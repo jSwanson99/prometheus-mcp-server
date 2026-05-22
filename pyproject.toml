@@ -8,6 +8,7 @@ dependencies = [
     "mcp[cli]>=1.26.0,<2",
     "prometheus-api-client",
     "python-dotenv",
+    "pyyaml>=6.0",
     "requests",
     "structlog>=23.0.0",
     "fastmcp>=3.1.0",
